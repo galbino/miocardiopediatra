@@ -15,7 +15,7 @@ class ProductionConfig(object):
         os.environ['SALT'] = '\xda9\xa3\xee^kK\r2U\xbf\xef\x95`\x18\x90\xaf\xd8\x07\t'
         os.environ['SECRET_KEY'] = 'Q\xee[z\xd5\x17y\xec\x92*\xb7l~us\xec\xb7\xd7BM\x90\xa9%\xeb'
 
-        os.environ['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://' + db_user + ':' + db_pwd + '@' + db_host + '/' + db_name
+        os.environ['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:KGG4m5MGIAl24pnn@/miocardiopediatra?unix_socket=/cloudsql/miocardio-pediatra:us-east1:miocardio-sql'
         os.environ['RESPONSE_STRUCT'] = '{"data": [], "errors": []}'
 
 
@@ -30,7 +30,7 @@ class DevelopmentConfig(object):
         os.environ['SALT'] = '\xda9\xa3\xee^kK\r2U\xbf\xef\x95`\x18\x90\xaf\xd8\x07\t'
         os.environ['SECRET_KEY'] = 'Q\xee[z\xd5\x17y\xec\x92*\xb7l~us\xec\xb7\xd7BM\x90\xa9%\xeb'
 
-        os.environ['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://' + db_user + ':' + db_pwd + '@' + db_host + '/' + db_name
+        os.environ['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:KGG4m5MGIAl24pnn@/miocardiopediatra?unix_socket=/cloudsql/miocardio-pediatra:us-east1:miocardio-sql'
         os.environ['RESPONSE_STRUCT'] = '{"data": [], "errors": []}'
 
 
