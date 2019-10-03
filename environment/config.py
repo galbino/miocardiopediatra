@@ -8,10 +8,6 @@ class ProductionConfig(object):
         print("CONFIG: Loading Production Environment Configurations")
 
         logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
-        db_host = os.getenv('DB_HOST')
-        db_pwd = os.getenv('DB_PASSWORD')
-        db_user = os.getenv('DB_USER')
-        db_name = os.getenv('DB_DATABASE_NAME')
         os.environ['SALT'] = '\xda9\xa3\xee^kK\r2U\xbf\xef\x95`\x18\x90\xaf\xd8\x07\t'
         os.environ['SECRET_KEY'] = 'Q\xee[z\xd5\x17y\xec\x92*\xb7l~us\xec\xb7\xd7BM\x90\xa9%\xeb'
 
@@ -23,10 +19,6 @@ class DevelopmentConfig(object):
     def configure(self):
         print("CONFIG: Loading Development Environment Configurations")
         logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
-        db_host = os.getenv('DB_HOST')
-        db_pwd = os.getenv('DB_PASSWORD')
-        db_user = os.getenv('DB_USER')
-        db_name = os.getenv('DB_DATABASE_NAME')
         os.environ['SALT'] = '\xda9\xa3\xee^kK\r2U\xbf\xef\x95`\x18\x90\xaf\xd8\x07\t'
         os.environ['SECRET_KEY'] = 'Q\xee[z\xd5\x17y\xec\x92*\xb7l~us\xec\xb7\xd7BM\x90\xa9%\xeb'
 
