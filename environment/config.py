@@ -12,6 +12,8 @@ class ProductionConfig(object):
         db_pwd = os.getenv('DB_PASSWORD')
         db_user = os.getenv('DB_USER')
         db_name = os.getenv('DB_DATABASE_NAME')
+        os.environ['SALT'] = '\xda9\xa3\xee^kK\r2U\xbf\xef\x95`\x18\x90\xaf\xd8\x07\t'
+        os.environ['SECRET_KEY'] = 'Q\xee[z\xd5\x17y\xec\x92*\xb7l~us\xec\xb7\xd7BM\x90\xa9%\xeb'
 
         os.environ['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://' + db_user + ':' + db_pwd + '@' + db_host + '/' + db_name
         os.environ['RESPONSE_STRUCT'] = '{"data": [], "errors": []}'
@@ -25,6 +27,8 @@ class DevelopmentConfig(object):
         db_pwd = os.getenv('DB_PASSWORD')
         db_user = os.getenv('DB_USER')
         db_name = os.getenv('DB_DATABASE_NAME')
+        os.environ['SALT'] = '\xda9\xa3\xee^kK\r2U\xbf\xef\x95`\x18\x90\xaf\xd8\x07\t'
+        os.environ['SECRET_KEY'] = 'Q\xee[z\xd5\x17y\xec\x92*\xb7l~us\xec\xb7\xd7BM\x90\xa9%\xeb'
 
         os.environ['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://' + db_user + ':' + db_pwd + '@' + db_host + '/' + db_name
         os.environ['RESPONSE_STRUCT'] = '{"data": [], "errors": []}'
