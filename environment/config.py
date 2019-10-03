@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
-
 import os
 import logging
-import sys
 
 
 class ProductionConfig(object):
     def configure(self):
         print("CONFIG: Loading Production Environment Configurations")
-        DEBUG = False
 
-        logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+        logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
         db_host = os.getenv('DB_HOST')
         db_pwd = os.getenv('DB_PASSWORD')
         db_user = os.getenv('DB_USER')
@@ -23,7 +20,6 @@ class ProductionConfig(object):
 class DevelopmentConfig(object):
     def configure(self):
         print("CONFIG: Loading Development Environment Configurations")
-        DEBUG = False
         logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
         db_host = os.getenv('DB_HOST')
         db_pwd = os.getenv('DB_PASSWORD')
@@ -38,6 +34,7 @@ class DefaultConfig(object):
 
     def configure(self):
         print("CONFIG: Loading Default Environment Configurations")
+        logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
         os.environ['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:KGG4m5MGIAl24pnn@35.229.102.116/miocardiopediatra'
         os.environ['RESPONSE_STRUCT'] = '{"data": [], "errors": []}'
         os.environ['SALT'] = '\xda9\xa3\xee^kK\r2U\xbf\xef\x95`\x18\x90\xaf\xd8\x07\t'
