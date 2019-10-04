@@ -1,6 +1,7 @@
 import hashlib
 import os
 from app.models.User import User
+from app.models.Especialidade import Especialidade
 from app.util.exceptions import *
 
 
@@ -24,3 +25,8 @@ def login(email, password):
     except NotFound:
         raise LoginIncorrect
     return user.as_dict()
+
+
+def get_especialidades():
+    esp_list = Especialidade.query.all()
+    return [esp.as_dict() for esp in esp_list]
