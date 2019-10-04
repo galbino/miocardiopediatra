@@ -19,3 +19,8 @@ def login():
     return jsonify(resp)
 
 
+@app.route('/especialidade', methods=['GET'])
+def get_especialidades():
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    resp['data'] = user_services.get_especialidades()
+    return jsonify(resp)
