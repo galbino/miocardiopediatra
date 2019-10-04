@@ -46,7 +46,7 @@ class User(db.Model):
     def as_dict(self):
         resp = {"id": self.id_, "name": self.name, "cpf": self.cpf, "email": self.email,
                 "last_update": self.last_update, "telefone": self.phone, "estado": self.state,
-                "bairro": self.neighbourhood, "is_doctor": self.is_doctor}
+                "bairro": self.neighbourhood, "is_doctor": self.is_doctor, "data_nasc": self.date_of_birth}
         if self.is_doctor:
             resp = {**resp, "crm": self.crm, "especialidade": {"id": self.especialidade.id,
                                                                "name": self.especialidade.name} if self.especialidade else None}
