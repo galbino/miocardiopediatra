@@ -14,13 +14,13 @@ def login(email, password):
 
 
 def generate_auth_token(user_id, is_doctor):
-    serial = itsdangerous.Serializer(app.secret_key, expires_in=3600)
+    serial = itsdangerous.TimedJSONWebSignatureSerializer(app.secret_key, expires_in=3600)
     return serial.dumps({'user_id': user_id, 'is_doctor': is_doctor}).decode("ascii")
 
 
 def retrieve_auth_token_info(token):
     try:
-        serial = itsdangerous.Serializer(app.secret_key)
+        serial = itsdangerous.TimedJSONWebSignatureSerializer(app.secret_key)
         data = serial.loads(token)
         return data
     except (itsdangerous.BadSignature, itsdangerous.exc.SignatureExpired):
