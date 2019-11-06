@@ -2,7 +2,7 @@ from app import app
 import json
 import os
 from flask import jsonify, request
-from app.services import user_services
+from app.services import user_services, auth_service
 from app.util.exceptions import AbroadException
 
 
@@ -16,7 +16,7 @@ def login():
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     email = request.json.get("email")
     pw = request.json.get("password")
-    user, token = user_services.login(email, pw)
+    user, token = auth_service.login(email, pw)
     resp['data'] = {"token": {"access_token": token, "type": "bearer", "expires_in": 3600}, **user}
     return jsonify(resp)
 
