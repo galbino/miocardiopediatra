@@ -16,7 +16,8 @@ def login():
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     email = request.json.get("email")
     pw = request.json.get("password")
-    resp['data'] = user_services.login(email, pw)
+    user, token = user_services.login(email, pw)
+    resp['data'] = {"token": {"access_token": token, "type": "bearer", "expires_in": 3600}, **user}
     return jsonify(resp)
 
 

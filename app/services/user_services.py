@@ -1,8 +1,8 @@
 import hashlib
 import os
 from app.models.User import User
-from app.models.Especialidade import Especialidade
 from app.util.exceptions import *
+from app.models.Especialidade import Especialidade
 from app import db
 
 
@@ -20,12 +20,8 @@ def get_user_by_email_pw(email, password):
     raise NotFound
 
 
-def login(email, password):
-    try:
-        user = get_user_by_email_pw(email, encrypt_password(password))
-    except NotFound:
-        raise LoginIncorrect
-    return user.as_dict()
+def check_user_existance(user_id):
+    return db.session.query(User.query.filter(User.id == user_id).exists()).scalar()
 
 
 def get_especialidades():
