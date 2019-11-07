@@ -60,25 +60,3 @@ def get_patient(_id, **kwargs):
     except AbroadException as err:
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)
-
-
-@app.route('/patient/<_id>', methods=['PATCH'])
-@requires_authn
-def update_patient(_id, **kwargs):
-    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
-    try:
-        pass
-    except AbroadException as err:
-        resp["errors"] = [erro for erro in err.args]
-    return jsonify(resp)
-
-
-@app.route('/patient/<_id>', methods=['DELETE'])
-@requires_authn
-def delete_patient(**kwargs):
-    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
-    try:
-        pass
-    except AbroadException as err:
-        resp["errors"] = [erro for erro in err.args]
-    return jsonify(resp)
