@@ -17,7 +17,7 @@ def requires_authn(f):
             info = auth_service.retrieve_auth_token_info(access_token)
             if not info:
                 raise InvalidToken
-            user_id = info.get("id")
+            user_id = info.get("user_id")
             if not user_services.check_user_existance(user_id):
                 raise InvalidToken
             kwargs["user_id"] = user_id

@@ -10,7 +10,7 @@ def login(email, password):
         token = generate_auth_token(user.id, user.is_doctor)
     except NotFound:
         raise LoginIncorrect
-    return user.as_dict(), token
+    return user.as_dict_short(), token
 
 
 def generate_auth_token(user_id, is_doctor):

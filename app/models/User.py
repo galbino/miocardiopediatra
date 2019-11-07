@@ -55,3 +55,5 @@ class User(db.Model):
             pass
         return resp
 
+    def as_dict_short(self):
+        return {"id": self.id_, "name": self.name}

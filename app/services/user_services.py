@@ -20,6 +20,17 @@ def get_user_by_email_pw(email, password):
     raise NotFound
 
 
+def list_users(is_doctor):
+    resp = User.query.filter(User.is_doctor == is_doctor).all()
+    patient_list = [patient.as_dict_short() for patient in resp]
+    return patient_list
+
+
+def get_user(_id, is_doctor):
+    resp = User.query.filter(User.is_doctor == is_doctor).filter(User.id == _id).first()
+    return resp.as_dict()
+
+
 def check_user_existance(user_id):
     return db.session.query(User.query.filter(User.id == user_id).exists()).scalar()
 

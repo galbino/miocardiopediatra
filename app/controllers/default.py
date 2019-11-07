@@ -3,6 +3,7 @@ import json
 import os
 from flask import jsonify, request
 from app.services import user_services, auth_service
+from app.util.decorator import requires_authn
 from app.util.exceptions import AbroadException
 
 
@@ -34,6 +35,28 @@ def signup():
     try:
         req_json = request.get_json()
         resp['data'] = user_services.signup(req_json)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/patient', methods=['GET'])
+@requires_authn
+def list_patients(**kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    try:
+        resp["data"] = user_services.list_users(0)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/patient/<_id>', methods=['GET'])
+@requires_authn
+def get_patient(_id, **kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    try:
+        resp["data"] = user_services.get_user(_id, 0)
     except AbroadException as err:
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)
