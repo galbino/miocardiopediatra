@@ -8,4 +8,4 @@ steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['beta', 'run', 'deploy', 'miocardio-pediatra-${_ENV}', '--image', 'gcr.io/$PROJECT_ID/miocardio-pediatra-${_ENV}', '--region', 'us-east1','--platform', 'managed', '--quiet', '--add-cloudsql-instances', 'miocardio-sql', '--allow-unauthenticated', '--set-env-vars', 'ENVIRONMENT=${_ENV}']
 images:
-- gcr.io/$PROJECT_ID/miocardio-pediatra
+- gcr.io/$PROJECT_ID/miocardio-pediatra-${_ENV}
