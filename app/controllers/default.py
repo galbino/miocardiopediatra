@@ -107,7 +107,7 @@ def get_anamnese(_id, **kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     doctor_id = kwargs.get("user_id")
     try:
-        resp["data"] = user_services.get_anamnese(_id, doctor_id)
+        resp["data"] = user_services.get_anamnese_as_text(_id, doctor_id)
     except AbroadException as err:
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)
