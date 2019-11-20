@@ -78,8 +78,9 @@ def delete_anamnese(_id, **kwargs):
 def patch_anamnese(_id, **kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     entries = request.json.get("questions")
+    doctor_id = kwargs.get("user_id")
     try:
-        resp["data"] = user_services.patch_anamnese(_id, entries)
+        resp["data"] = user_services.patch_anamnese(_id, doctor_id, entries)
     except AbroadException as err:
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)

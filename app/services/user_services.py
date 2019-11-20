@@ -143,7 +143,7 @@ def delete_anamnese(anamnese_id, doctor_id):
     return True
 
 
-def patch_anamnese(anamnese_id, entries, lang="pt-BR"):
+def patch_anamnese(anamnese_id, doctor_id, entries, lang="pt-BR"):
     resp = UserAnamnese.query.filter(UserAnamnese.id == anamnese_id).filter(UserAnamnese.doctor_id == doctor_id).first()
     if resp is not None:
         resp.answers.clear()
@@ -153,3 +153,4 @@ def patch_anamnese(anamnese_id, entries, lang="pt-BR"):
         raise NotFound
     db.session.commit()
     return resp.as_dict(lang)
+
