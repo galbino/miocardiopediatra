@@ -1,6 +1,6 @@
 import hashlib
 import os
-from app.models.AnamneseTemplate import *
+from app.models.Anamnese import *
 from app.models.User import User
 from app.util.exceptions import *
 from app.models.Especialidade import Especialidade
@@ -76,6 +76,7 @@ def signup(json_file):
         db.session.commit()
     except Exception as err:
         print(err)
+        db.session.rollback()
         raise BadRequest
     return user.as_dict_short()
 
@@ -101,9 +102,11 @@ def create_anamnese(user_id, doctor_id, template_id, entries, lang="pt-BR"):
         anamnese.answers.extend(answers)
         db.session.add(anamnese)
         db.session.commit()
-        return anamnese.as_dict(lang)
+        taxa_it, taxa_ia = calc_taxa_from_questions(anamnese.as_dict_calc())
+        return {**anamnese.as_dict(lang), "miocardite_rate": taxa_it, "miocardiopatia_rate": taxa_ia}
     except Exception as err:
         print(err)
+        db.session.rollback()
         raise BadRequest
 
 
@@ -127,10 +130,18 @@ def list_all_anamneses_from_patient(user_id, doctor_id):
     return [an.as_dict_short() for an in resp]
 
 
-def get_anamnese(anamnese_id, doctor_id, lang="pt-BR"):
+def get_anamnese_as_text(anamnese_id, doctor_id, lang="pt-BR"):
     anamnese = UserAnamnese.query.filter(UserAnamnese.id == anamnese_id).filter(UserAnamnese.doctor_id == doctor_id).first()
     if anamnese:
         return anamnese.as_dict(lang)
+    else:
+        raise NotFound
+
+
+def get_anamnese(anamnese_id, doctor_id):
+    anamnese = UserAnamnese.query.filter(UserAnamnese.id == anamnese_id).filter(UserAnamnese.doctor_id == doctor_id).first()
+    if anamnese:
+        return anamnese
     else:
         raise NotFound
 
@@ -144,13 +155,37 @@ def delete_anamnese(anamnese_id, doctor_id):
 
 
 def patch_anamnese(anamnese_id, doctor_id, entries, lang="pt-BR"):
-    resp = UserAnamnese.query.filter(UserAnamnese.id == anamnese_id).filter(UserAnamnese.doctor_id == doctor_id).first()
-    if resp is not None:
+    try:
+        resp = get_anamnese(anamnese_id, doctor_id)
         resp.answers.clear()
         answers = fill_questions(entries)
         resp.answers.extend(answers)
-    else:
-        raise NotFound
-    db.session.commit()
-    return resp.as_dict(lang)
+        db.session.commit()
+        taxa_it, taxa_ia = calc_taxa_from_questions(resp.as_dict_calc())
+        return {**resp.as_dict(lang), "miocardite_rate": taxa_it, "miocardiopatia_rate": taxa_ia}
+    except Exception as err:
+        print(err)
+        db.session.rollback()
+        raise BadRequest
 
+
+def calc_taxa_from_questions(questions):
+    taxa_miocardite = 0
+    taxa_miocardiopatia = 0
+    overall_weight_it = 0
+    overall_weight_ia = 0
+    for question in questions:
+        weight_ia = question.get("weight_miocardiopatia")
+        value_ia = question.get("value_weight_miocardiopatia")
+        weight_it = question.get("weight_miocardite")
+        value_it = question.get("value_weight_miocardite")
+        answer = question.get("answer")
+        if answer == value_ia:
+            taxa_miocardiopatia += 1 * weight_ia
+        if answer == value_it:
+            taxa_miocardite += 1 * weight_it
+        overall_weight_it += weight_it
+        overall_weight_ia += weight_ia
+    resp_it = taxa_miocardite / overall_weight_it
+    resp_ia = taxa_miocardiopatia / overall_weight_ia
+    return resp_it, resp_ia

@@ -29,6 +29,9 @@ class AnamneseQuestion(db.Model):
     def as_dict(self, lang):
         return {"id": self.id_, "label": self.label.get(lang), "required": self.required}
 
+    def as_dict_calc(self):
+        return {"weight_miocardite": self.weight_miocardite, "weight_miocardiopatia": self.weight_miocardiopatia, "value_weight_miocardiopatia": self.value_weight_miocardiopatia, "value_weight_miocardite": self.value_weight_miocardite}
+
 
 class AnamneseTemplate(db.Model):
     __tablename__ = "AnamneseTemplate"
@@ -79,6 +82,9 @@ class UserAnamnese(db.Model):
     def as_dict(self, lang):
         return {"template": self.anamnese_template.as_dict(), "user_id": self.user_id, "doctor_id": self.doctor_id, "questions": [answer.as_dict(lang) for answer in self.answers], "anamnese_id": self.id_}
 
+    def as_dict_calc(self):
+        return [answer.as_dict_calc() for answer in self.answers]
+
 
 class UserAnamneseAnswers(db.Model):
     __tablename__ = "UserAnamneseAnswers"
@@ -94,3 +100,6 @@ class UserAnamneseAnswers(db.Model):
 
     def as_dict(self, lang):
         return {"question": self.question.get_label(lang), "answer": self.answer}
+
+    def as_dict_calc(self):
+        return {**self.question.as_dict_calc(), "answer": self.answer}
