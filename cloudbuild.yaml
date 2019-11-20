@@ -1,11 +1,11 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/miocardio-pediatra', '.']
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/miocardio-pediatra-${_ENV}', '.']
   # push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/miocardio-pediatra']
+  args: ['push', 'gcr.io/$PROJECT_ID/miocardio-pediatra-${_ENV}']
   # Deploy container image to Cloud Run
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['beta', 'run', 'deploy', 'miocardio-pediatra', '--image', 'gcr.io/$PROJECT_ID/miocardio-pediatra', '--region', 'us-east1','--platform', 'managed', '--quiet', '--add-cloudsql-instances', 'miocardio-sql', '--allow-unauthenticated', '--set-env-vars', 'ENVIRONMENT=development']
+  args: ['beta', 'run', 'deploy', 'miocardio-pediatra-${_ENV}', '--image', 'gcr.io/$PROJECT_ID/miocardio-pediatra-${_ENV}', '--region', 'us-east1','--platform', 'managed', '--quiet', '--add-cloudsql-instances', 'miocardio-sql', '--allow-unauthenticated', '--set-env-vars', 'ENVIRONMENT=${_ENV}']
 images:
 - gcr.io/$PROJECT_ID/miocardio-pediatra

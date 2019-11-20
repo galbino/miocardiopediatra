@@ -36,7 +36,7 @@ class DefaultConfig(object):
 class Config(object):
     logging.basicConfig()
     if 'ENVIRONMENT' in os.environ:
-        if os.environ['ENVIRONMENT'] == 'development':
+        if os.environ['ENVIRONMENT'] == 'dev' or os.environ['ENVIRONMENT'] == 'qa':
             DevelopmentConfig().configure()
         elif os.environ['ENVIRONMENT'] == 'prod':
             ProductionConfig().configure()
