@@ -34,7 +34,7 @@ class User(db.Model):
     last_update = db.Column(db.DATETIME, default=datetime.utcnow, onupdate=datetime.utcnow)
     creation_date = db.Column(db.DATETIME, default=datetime.utcnow)
 
-    especialidade = db.relationship("Especialidade", lazy='select', cascade='delete, save-update')
+    especialidade = db.relationship("Especialidade", lazy='select')
 
     def __init__(self):
         self.id = uuid1().int >> 64

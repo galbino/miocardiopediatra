@@ -25,7 +25,7 @@ def login():
 @app.route('/especialidade', methods=['GET'])
 def get_especialidades():
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
-    resp['data'] = user_services.get_especialidades()
+    resp['data'] = user_services.list_especialidades()
     return jsonify(resp)
 
 
@@ -60,3 +60,100 @@ def get_patient(_id, **kwargs):
     except AbroadException as err:
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)
+
+
+@app.route('/anamnese/<_id>', methods=['DELETE'])
+@requires_authn
+def delete_anamnese(_id, **kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    try:
+        resp["data"] = user_services.delete_anamnese(_id)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/anamnese/<_id>', methods=['PATCH'])
+@requires_authn
+def patch_anamnese(_id, **kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    entries = request.json.get("questions")
+    try:
+        resp["data"] = user_services.patch_anamnese(_id, entries)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/anamnese', methods=['POST'])
+@requires_authn
+def create_anamnese(**kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    user_id = request.json.get("patient_id")
+    doctor_id = kwargs.get("user_id")
+    template_id = request.json.get("template_id")
+    entries = request.json.get("questions")
+    try:
+        resp["data"] = user_services.create_anamnese(user_id, doctor_id, template_id, entries)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/anamnese/<_id>', methods=['GET'])
+@requires_authn
+def get_anamnese(_id, **kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    doctor_id = kwargs.get("user_id")
+    try:
+        resp["data"] = user_services.get_anamnese(_id, doctor_id)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/anamnese', methods=['GET'])
+@requires_authn
+def list_anamnese(**kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    doctor_id = kwargs.get("user_id")
+    try:
+        resp["data"] = user_services.list_all_anamneses(doctor_id)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/user/<_id>/anamnese', methods=['GET'])
+@requires_authn
+def list_anamnese_from_patient(_id, **kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    doctor_id = kwargs.get("user_id")
+    try:
+        resp["data"] = user_services.list_all_anamneses_from_patient(_id, doctor_id)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/anamnese/template', methods=['GET'])
+@requires_authn
+def list_anamnese_template(**kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    try:
+        resp["data"] = user_services.list_anamnese_template()
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/anamnese/template/<_id>', methods=['GET'])
+@requires_authn
+def get_anamnese_template(_id, **kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    try:
+        resp["data"] = user_services.get_anamnese_template(_id)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
