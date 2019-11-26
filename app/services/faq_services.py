@@ -34,16 +34,19 @@ def create_question(user_id, question):
 
 def answer_question(faq_id, answer, doctor_id):
     faq = get_faq(faq_id)
-    faq.answer = answer
-    faq.answered_by = doctor_id
-    faq.answered = 1
-    try:
-        db.session.commit()
-        return faq.as_dict()
-    except Exception as err:
-        print(err)
-        db.session.rollback()
-        raise BadRequest
+    if not faq.answered:
+        faq.answer = answer
+        faq.answered_by = doctor_id
+        faq.answered = 1
+        try:
+            db.session.commit()
+            return faq.as_dict()
+        except Exception as err:
+            print(err)
+            db.session.rollback()
+            raise BadRequest
+    else:
+        raise NotFound
 
 
 def delete_faq(faq_id):
@@ -51,7 +54,7 @@ def delete_faq(faq_id):
     try:
         db.session.delete(faq)
         db.session.commit()
-        return faq.as_dict()
+        return 1
     except Exception as err:
         print(err)
         db.session.rollback()

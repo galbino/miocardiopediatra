@@ -27,7 +27,7 @@ class FAQ(db.Model):
         return str(self.id)
 
     def as_dict(self):
-        return {"id": self.id_, "question": self.question, "answer": self.answer, "last_update": self.last_update, "creation_date": self.creation_date, "asked_by": self.user.name, "answered_by": self.doctor.name}
+        return {"id": self.id_, "question": self.question, "answered": self.answered, "answer": self.answer, "last_update": self.last_update, "creation_date": self.creation_date, "asked_by": self.user.name, "answered_by": self.doctor.name if self.answered else None}
 
     def as_dict_new(self):
         return {"id": self.id_, "question": self.question, "asked_by": self.user.name}
