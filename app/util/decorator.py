@@ -28,3 +28,13 @@ def requires_authn(f):
         kwargs['Authorization'] = access_token
         return f(*args, **kwargs)
     return decorated
+
+
+def requires_authz(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        is_doctor = kwargs.get("is_doctor")
+        if not is_doctor:
+            raise Forbidden
+        return f(*args, **kwargs)
+    return decorated

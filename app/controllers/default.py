@@ -2,8 +2,8 @@ from app import app
 import json
 import os
 from flask import jsonify, request
-from app.services import user_services, auth_service
-from app.util.decorator import requires_authn
+from app.services import user_services, auth_service, faq_services
+from app.util.decorator import requires_authn, requires_authz
 from app.util.exceptions import AbroadException
 
 
@@ -42,6 +42,7 @@ def signup():
 
 @app.route('/patient', methods=['GET'])
 @requires_authn
+@requires_authz
 def list_patients(**kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     query = request.args.get("q")
@@ -54,6 +55,7 @@ def list_patients(**kwargs):
 
 @app.route('/patient/<_id>', methods=['GET'])
 @requires_authn
+@requires_authz
 def get_patient(_id, **kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     try:
@@ -65,6 +67,7 @@ def get_patient(_id, **kwargs):
 
 @app.route('/anamnese/<_id>', methods=['DELETE'])
 @requires_authn
+@requires_authz
 def delete_anamnese(_id, **kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     uid = kwargs.get("user_id")
@@ -77,6 +80,7 @@ def delete_anamnese(_id, **kwargs):
 
 @app.route('/anamnese/<_id>', methods=['PATCH'])
 @requires_authn
+@requires_authz
 def patch_anamnese(_id, **kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     entries = request.json.get("questions")
@@ -90,6 +94,7 @@ def patch_anamnese(_id, **kwargs):
 
 @app.route('/anamnese', methods=['POST'])
 @requires_authn
+@requires_authz
 def create_anamnese(**kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     user_id = request.json.get("patient_id")
@@ -105,6 +110,7 @@ def create_anamnese(**kwargs):
 
 @app.route('/anamnese/<_id>', methods=['GET'])
 @requires_authn
+@requires_authz
 def get_anamnese(_id, **kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     doctor_id = kwargs.get("user_id")
@@ -117,6 +123,7 @@ def get_anamnese(_id, **kwargs):
 
 @app.route('/anamnese', methods=['GET'])
 @requires_authn
+@requires_authz
 def list_anamnese(**kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     doctor_id = kwargs.get("user_id")
@@ -129,6 +136,7 @@ def list_anamnese(**kwargs):
 
 @app.route('/user/<_id>/anamnese', methods=['GET'])
 @requires_authn
+@requires_authz
 def list_anamnese_from_patient(_id, **kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     doctor_id = kwargs.get("user_id")
@@ -168,6 +176,57 @@ def get_profile(**kwargs):
     own_id = kwargs.get("user_id")
     try:
         resp["data"] = user_services.get_user(own_id)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/faq', methods=['GET'])
+@requires_authn
+def list_questions(**kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    answered = request.args.get("answered")
+    try:
+        resp["data"] = faq_services.list_faq(answered)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/faq', methods=['POST'])
+@requires_authn
+def ask_question(**kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    question = request.json.get("question")
+    uid = kwargs.get("user_id")
+    try:
+        resp["data"] = faq_services.create_question(uid, question)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/faq/<_id>', methods=['PATCH'])
+@requires_authn
+@requires_authz
+def answer_question(_id, **kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    answer = request.json.get("answer")
+    uid = kwargs.get("user_id")
+    try:
+        resp["data"] = faq_services.answer_question(_id, answer, uid)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/faq/<_id>', methods=['DELETE'])
+@requires_authn
+@requires_authz
+def delete_question(_id, **kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    try:
+        resp["data"] = faq_services.delete_faq(_id)
     except AbroadException as err:
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)
