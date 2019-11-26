@@ -57,7 +57,7 @@ def list_patients(**kwargs):
 def get_patient(_id, **kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     try:
-        resp["data"] = user_services.get_user(_id, 0)
+        resp["data"] = user_services.get_user_as_dict(_id, 0)
     except AbroadException as err:
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)
@@ -167,7 +167,19 @@ def get_profile(**kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     own_id = kwargs.get("user_id")
     try:
-        resp["data"] = user_services.get_user(own_id)
+        resp["data"] = user_services.get_user_as_dict(own_id)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/profile', methods=['PATCH'])
+@requires_authn
+def update_profile(**kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    own_id = kwargs.get("user_id")
+    try:
+        resp["data"] = user_services.patch_user(own_id, request.json)
     except AbroadException as err:
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)
