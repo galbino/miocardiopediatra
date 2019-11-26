@@ -195,3 +195,23 @@ def calc_taxa_from_questions(questions):
     resp_it = taxa_miocardite / overall_weight_it
     resp_ia = taxa_miocardiopatia / overall_weight_ia
     return resp_it, resp_ia
+
+
+def patch_user(user_id, req):
+    user = get_user(user_id)
+    user.name = req.get("name")
+    user.phone = req.get("phone")
+    user.state = req.get("state")
+    user.gender = req.get("gender")
+    user.city = req.get("city")
+    user.neighbourhood = req.get("neighbourhood")
+    if user.is_doctor:
+        user.esp_id = req.get("specialty_id")
+        user.crm = req.get("crm")
+    else:
+        user.phone_resp = req.get("phone_resp")
+        user.height = req.get("height")
+        user.weight = req.get("weight")
+        user.obs = req.get("obs")
+    db.session.commit()
+    return user.as_dict()
