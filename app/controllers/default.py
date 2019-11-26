@@ -66,8 +66,9 @@ def get_patient(_id, **kwargs):
 @requires_authn
 def delete_anamnese(_id, **kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    uid = kwargs.get("user_id")
     try:
-        resp["data"] = user_services.delete_anamnese(_id)
+        resp["data"] = user_services.delete_anamnese(_id, uid)
     except AbroadException as err:
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)
@@ -158,3 +159,14 @@ def get_anamnese_template(_id, **kwargs):
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)
 
+
+@app.route('/profile', methods=['GET'])
+@requires_authn
+def get_profile(**kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    own_id = kwargs.get("user_id")
+    try:
+        resp["data"] = user_services.get_user(own_id)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
