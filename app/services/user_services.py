@@ -157,7 +157,7 @@ def delete_anamnese(anamnese_id, doctor_id):
 def patch_anamnese(anamnese_id, doctor_id, entries, lang="pt-BR"):
     try:
         resp = get_anamnese(anamnese_id, doctor_id)
-        resp.answers.clear()
+        UserAnamneseAnswers.query.filter(UserAnamneseAnswers.user_anamnese_id == anamnese_id).delete()
         answers = fill_questions(entries)
         resp.answers.extend(answers)
         db.session.commit()
