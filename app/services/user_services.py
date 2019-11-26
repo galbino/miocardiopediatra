@@ -21,8 +21,11 @@ def get_user_by_email_pw(email, password):
     raise NotFound
 
 
-def list_users(is_doctor):
-    resp = User.query.filter(User.is_doctor == is_doctor).all()
+def list_users(is_doctor, query):
+    resp = User.query.filter(User.is_doctor == is_doctor)
+    if query:
+        resp = resp.filter(User.name.like("%" + query + "%"))
+    resp = resp.all()
     patient_list = [patient.as_dict_short() for patient in resp]
     return patient_list
 

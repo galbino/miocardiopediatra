@@ -44,8 +44,9 @@ def signup():
 @requires_authn
 def list_patients(**kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    query = request.args.get("q")
     try:
-        resp["data"] = user_services.list_users(0)
+        resp["data"] = user_services.list_users(0, query)
     except AbroadException as err:
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)
