@@ -30,8 +30,11 @@ def list_users(is_doctor, query):
     return patient_list
 
 
-def get_user(_id, is_doctor):
-    resp = User.query.filter(User.is_doctor == is_doctor).filter(User.id == _id).first()
+def get_user(_id, is_doctor=None):
+    resp = User.query.filter(User.id == _id)
+    if is_doctor:
+        resp = resp.filter(User.is_doctor == is_doctor)
+    resp = resp.first()
     if resp:
         return resp.as_dict()
     else:
