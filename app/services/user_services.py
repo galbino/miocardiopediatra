@@ -64,20 +64,23 @@ def list_especialidades():
 
 def signup(json_file):
     user = User()
-    user.cpf = json_file.get("cpf")
-    user.name = json_file.get("nome")
+    try:
+        user.name = json_file["nome"]
+        user.cpf = json_file["cpf"]
+        user.email = json_file["email"]
+    except Exception:
+        raise LackOfParameters
     user.neighbourhood = json_file.get("bairro")
     user.city = json_file.get("cidade")
     user.gender = json_file.get("sexo")
     user.state = json_file.get("estado")
     user.phone = json_file.get("telefone")
     try:
-        user.password = encrypt_password(json_file.get("senha"))
+        user.password = encrypt_password(json_file["senha"])
     except Exception:
         raise WeakPassword
     user.is_doctor = json_file.get("isDoctor")
     user.date_of_birth = json_file.get("dataNascimento")
-    user.email = json_file.get("email")
     if user.is_doctor == 1:
         user.crm = json_file.get("crm")
         user.esp_id = json_file.get("especialidade")
