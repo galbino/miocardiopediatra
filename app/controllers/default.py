@@ -2,7 +2,7 @@ from app import app
 import json
 import os
 from flask import jsonify, request
-from app.services import user_services, auth_service, faq_services
+from app.services import user_services, auth_service, faq_services, exame_services
 from app.util.decorator import requires_authn, requires_authz
 from app.util.exceptions import AbroadException
 
@@ -239,6 +239,20 @@ def delete_question(_id, **kwargs):
     resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
     try:
         resp["data"] = faq_services.delete_faq(_id)
+    except AbroadException as err:
+        resp["errors"] = [erro for erro in err.args]
+    return jsonify(resp)
+
+
+@app.route('/user/<_id>/exam', methods=['POST'])
+@requires_authn
+@requires_authz
+def add_exam_to_user(_id, **kwargs):
+    resp = json.loads(os.environ.get("RESPONSE_STRUCT"))
+    uid = kwargs.get("user_id")
+    exams = request.json.get("exam_list")
+    try:
+        resp["data"] = exame_services.create_user_exame(_id, exams, uid)
     except AbroadException as err:
         resp["errors"] = [erro for erro in err.args]
     return jsonify(resp)

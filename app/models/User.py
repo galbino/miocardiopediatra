@@ -35,6 +35,7 @@ class User(db.Model):
     creation_date = db.Column(db.DATETIME, default=datetime.utcnow)
 
     especialidade = db.relationship("Especialidade", lazy='select')
+    exames = db.relationship("UserExame", lazy='select', cascade="save-update", primaryjoin="User.id == UserExame.user_id")
 
     def __init__(self):
         self.id = uuid1().int >> 64
@@ -51,9 +52,8 @@ class User(db.Model):
             resp = {**resp, "crm": self.crm, "especialidade": {"id": self.especialidade.id,
                                                                "name": self.especialidade.name} if self.especialidade else None}
         else:
-            resp = {**resp, "cpf_resp": self.cpf_resp, "tel_resp": self.phone_resp, "altura": self.height, "peso": self.weight, "obs": self.obs}
-            pass
+            resp = {**resp, "cpf_resp": self.cpf_resp, "tel_resp": self.phone_resp, "altura": self.height, "peso": self.weight, "obs": self.obs, "exames": [exame.as_dict() for exame in self.exames]}
         return resp
 
     def as_dict_short(self):
-        return {"id": self.id_, "name": self.name}
+        return {"id": self.id_, "name": self.name, "is_doctor": self.is_doctor}

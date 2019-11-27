@@ -3,6 +3,7 @@ import os
 from app.models.Anamnese import *
 from app.models.User import User
 from app.util.exceptions import *
+from app.services import exame_services
 from app.models.Especialidade import Especialidade
 from app import db
 
@@ -39,6 +40,7 @@ def get_user_as_dict(_id, is_doctor=None):
         return resp.as_dict()
     else:
         raise NotFound
+
 
 def get_user(_id, is_doctor=None):
     resp = User.query.filter(User.id == _id)
@@ -119,7 +121,12 @@ def create_anamnese(user_id, doctor_id, template_id, entries, lang="pt-BR"):
         db.session.add(anamnese)
         db.session.commit()
         taxa_it, taxa_ia = calc_taxa_from_questions(anamnese.as_dict_calc())
-        return {**anamnese.as_dict(lang), "miocardite_rate": taxa_it, "miocardiopatia_rate": taxa_ia}
+        exames = []
+        if taxa_it:
+            exames.extend(exame_services.list_exames(for_it=1))
+        if taxa_ia:
+            exames.extend(exame_services.list_exames(for_ia=1))
+        return {**anamnese.as_dict(lang), "miocardite_rate": taxa_it, "miocardiopatia_rate": taxa_ia, "exams": exames}
     except Exception as err:
         print(err)
         db.session.rollback()
@@ -178,7 +185,12 @@ def patch_anamnese(anamnese_id, doctor_id, entries, lang="pt-BR"):
         resp.answers.extend(answers)
         db.session.commit()
         taxa_it, taxa_ia = calc_taxa_from_questions(resp.as_dict_calc())
-        return {**resp.as_dict(lang), "miocardite_rate": taxa_it, "miocardiopatia_rate": taxa_ia}
+        exames = []
+        if taxa_it:
+            exames.extend(exame_services.list_exames(0))
+        if taxa_ia:
+            exames.extend(exame_services.list_exames(1))
+        return {**resp.as_dict(lang), "miocardite_rate": taxa_it, "miocardiopatia_rate": taxa_ia, "exams": exames}
     except Exception as err:
         print(err)
         db.session.rollback()
