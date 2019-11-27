@@ -66,7 +66,6 @@ def signup(json_file):
     user = User()
     try:
         user.name = json_file["nome"]
-        user.cpf = json_file["cpf"]
         user.email = json_file["email"]
     except Exception:
         raise LackOfParameters
@@ -82,6 +81,7 @@ def signup(json_file):
     user.is_doctor = json_file.get("isDoctor")
     user.date_of_birth = json_file.get("dataNascimento")
     if user.is_doctor == 1:
+        user.cpf = json_file["cpf"]
         user.crm = json_file.get("crm")
         user.esp_id = json_file.get("especialidade")
     elif user.is_doctor == 0:
