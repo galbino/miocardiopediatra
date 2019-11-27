@@ -34,7 +34,8 @@ class User(db.Model):
     last_update = db.Column(db.DATETIME, default=datetime.utcnow, onupdate=datetime.utcnow)
     creation_date = db.Column(db.DATETIME, default=datetime.utcnow)
 
-    especialidade = db.relationship("Especialidade", lazy='select', cascade='delete, save-update')
+    especialidade = db.relationship("Especialidade", lazy='select')
+    exames = db.relationship("UserExame", lazy='select', cascade="save-update", primaryjoin="User.id == UserExame.user_id")
 
     def __init__(self):
         self.id = uuid1().int >> 64
@@ -46,12 +47,13 @@ class User(db.Model):
     def as_dict(self):
         resp = {"id": self.id_, "name": self.name, "cpf": self.cpf, "email": self.email,
                 "last_update": self.last_update, "telefone": self.phone, "estado": self.state,
-                "bairro": self.neighbourhood, "is_doctor": self.is_doctor, "data_nasc": self.date_of_birth}
+                "bairro": self.neighbourhood, "is_doctor": self.is_doctor, "data_nasc": self.date_of_birth, "cidade": self.city, "sexo": self.gender}
         if self.is_doctor:
             resp = {**resp, "crm": self.crm, "especialidade": {"id": self.especialidade.id,
                                                                "name": self.especialidade.name} if self.especialidade else None}
         else:
-            resp = {**resp, "cpf_resp": self.cpf_resp, "tel_resp": self.phone_resp, "altura": self.height, "peso": self.weight, "obs": self.obs}
-            pass
+            resp = {**resp, "cpf_resp": self.cpf_resp, "tel_resp": self.phone_resp, "altura": self.height, "peso": self.weight, "obs": self.obs, "exames": [exame.as_dict() for exame in self.exames], "email_resp": self.email_resp}
         return resp
 
+    def as_dict_short(self):
+        return {"id": self.id_, "name": self.name, "is_doctor": self.is_doctor}

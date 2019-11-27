@@ -5,5 +5,6 @@ ADD . /app
 WORKDIR /app
 RUN ["pip", "install", "--no-cache-dir", "--upgrade", "pip"]
 RUN ["pip", "install", "--no-cache-dir", "--disable-pip-version-check", "-r", "requirements.txt"]
+RUN ["pytest", "-vv"]
 ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
 EXPOSE 8080

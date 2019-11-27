@@ -91,3 +91,8 @@ class CommentWithoutDocument(AbroadException):
         message = dict([("code", 403), ("message", "Não existe nenhum documento associado para comentar.")])
         super().__init__(message)
 
+
+class AccessTokenMissing(AbroadException):
+    def __init__(self):
+        message = dict([("code", 401), ("message", "Token não encontrado no header.")])
+        super().__init__(message)
