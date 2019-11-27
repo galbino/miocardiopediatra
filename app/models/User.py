@@ -52,7 +52,7 @@ class User(db.Model):
             resp = {**resp, "crm": self.crm, "especialidade": {"id": self.especialidade.id,
                                                                "name": self.especialidade.name} if self.especialidade else None}
         else:
-            resp = {**resp, "cpf_resp": self.cpf_resp, "tel_resp": self.phone_resp, "altura": self.height, "peso": self.weight, "obs": self.obs, "exames": [exame.as_dict() for exame in self.exames]}
+            resp = {**resp, "cpf_resp": self.cpf_resp, "tel_resp": self.phone_resp, "altura": self.height, "peso": self.weight, "obs": self.obs, "exames": [exame.as_dict() for exame in self.exames], "email_resp": self.email_resp}
         return resp
 
     def as_dict_short(self):
