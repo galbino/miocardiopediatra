@@ -40,7 +40,7 @@ class TestUserServices:
         assert resp == actual_resp
 
     def test_password_encrypt_two(self):
-        password = 'teste1'
+        password = 'teste'
         actual_resp = "a481b165a7e751b7be74d129cda4e2337cb089f2953b232836d2ac78763e1558"
         resp = user_services.encrypt_password(password)
         assert resp != password
